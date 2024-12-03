@@ -1,0 +1,29 @@
+﻿@page "/tai"
+
+@rendermode InteractiveServer
+
+
+<h3>UploadRoot</h3>
+<InputFile OnChange="FileSeleted" accept=".jpg,.jpeg,.tiff"></InputFile>
+<button @onclick="UploadFile">Upload</button>
+
+@code {
+    private IBrowserFile file;
+    private async Task FileSeleted(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+
+    }
+
+    private async Task UploadFile()
+    {
+        //thiết lập đường dẫn
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", file.Name);
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.OpenReadStream().CopyToAsync(stream);
+        }
+
+    }
+
+}

@@ -1,0 +1,27 @@
+﻿@page "/them"
+
+
+@rendermode InteractiveServer
+@inject ISinhVienService _service
+@inject NavigationManager _nav
+
+<h3>ThemSV</h3>
+
+
+<EditForm Model="svmoi" OnValidSubmit="guiform" FormName="phatgaming">
+    <InputText @bind-Value="svmoi.Name"></InputText>
+    <InputNumber @bind-Value="svmoi.Age"></InputNumber>
+    <button type="submit" class="btn btn-primary">Them sinh vien</button>
+</EditForm>
+
+@code {
+    public SinhVien svmoi = new SinhVien();
+
+    public async Task guiform()
+    {
+        await _service.Create(svmoi);
+
+        // chuyen ve list sau khi them
+        _nav.NavigateTo("/list");
+    }
+}

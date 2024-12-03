@@ -1,0 +1,40 @@
+﻿@page "/delete/{id:int}"
+
+@rendermode InteractiveServer
+@inject ISinhVienService SinhVienService
+@inject NavigationManager NavigationManager
+
+<h3>Xác Nhận Xóa Sinh Viên</h3>
+
+@if (SinhVien != null)
+{
+    <p>Bạn có chắc chắn muốn xóa sinh viên <strong>@SinhVien.Name</strong> (ID: @SinhVien.Id) không?</p>
+    <button class="btn btn-danger" @onclick="DeleteSinhVien">Xóa</button>
+    <button class="btn btn-secondary" @onclick="Cancel">Hủy</button>
+}
+else
+{
+    <p>Đang tải thông tin sinh viên...</p>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private SinhVien SinhVien;
+
+    protected async override Task OnInitializedAsync()
+    {
+        SinhVien = await SinhVienService.GetById(id);
+    }
+
+    private async Task DeleteSinhVien()
+    {
+        await SinhVienService.Delete(id);
+        NavigationManager.NavigateTo("/list");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/list");
+    }
+}

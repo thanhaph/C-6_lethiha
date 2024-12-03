@@ -1,0 +1,43 @@
+﻿@page "/Sua/{id:int}"
+
+@rendermode InteractiveServer
+@inject ISinhVienService SinhVienService
+@inject NavigationManager NavigationManager
+
+<h3>Edit</h3>
+
+<EditForm Model="SinhVien" OnValidSubmit="SubmitForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label>Name: </label>
+        <InputText @bind-Value="SinhVien.Name" />
+    </div>
+    <div>
+        <label>Age: </label>
+        <InputNumber @bind-Value="SinhVien.Age" />
+    </div>
+    <button type="submit">Edit</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private SinhVien SinhVien = new SinhVien();
+
+    protected async override Task OnInitializedAsync()
+    {
+        SinhVien = await SinhVienService.GetById(Id);
+        if (SinhVien == null)
+        {
+            // Điều hướng đến danh sách nếu không tìm thấy sinh viên
+            NavigationManager.NavigateTo("/list");
+        }
+    }
+
+    private async Task SubmitForm()
+    {
+        await SinhVienService.Update(SinhVien);
+        NavigationManager.NavigateTo("/list");
+    }
+}
